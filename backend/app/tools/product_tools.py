@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from backend.app.tools.mock_data import MOCK_PRODUCTS
+from backend.app.database import run_query
 
 
 @tool
@@ -20,9 +20,18 @@ def get_product_details(product_id: int) -> dict:
         A dictionary with product details, or an error message if the
         product_id doesn't exist.
     """
-    product = MOCK_PRODUCTS.get(product_id)
+    rows = run_query(
+        """
+        SELECT product_id, name, description, category, price, in_stock
+        FROM products
+        WHERE product_id = %s;
+        """,
+        (product_id,),
+    )
 
-    if product is None:
+    if not rows:
         return {"error": f"No product found with product_id {product_id}."}
 
+    product = rows[0]
+    product["price"] = float(product["price"])  # NUMERIC comes back as Decimal
     return product

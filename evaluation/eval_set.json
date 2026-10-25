@@ -1,0 +1,67 @@
+[
+  {
+    "id": "policy_return_window",
+    "query": "What's your return policy?",
+    "expected_tool": "search_knowledge_base",
+    "expected_source_doc": "return_policy.pdf",
+    "category": "policy_lookup"
+  },
+  {
+    "id": "policy_odd_phrasing",
+    "query": "money back if I don't like it",
+    "expected_tool": "search_knowledge_base",
+    "expected_source_doc": "refund_policy.pdf",
+    "category": "policy_lookup"
+  },
+  {
+    "id": "faq_gap_gift_wrap",
+    "query": "can you wrap gifts?",
+    "expected_tool": "search_knowledge_base",
+    "expected_source_doc": "admin_faq_gap_1",
+    "category": "faq_gap_retrieval",
+    "note": "Replace admin_faq_gap_1 with the actual gap_id from your faq_gaps table"
+  },
+  {
+    "id": "order_status_specific",
+    "query": "What is the status of order 1?",
+    "expected_tool": "get_order_status",
+    "category": "order_lookup",
+    "requires_customer_id": 1
+  },
+  {
+    "id": "order_status_vague",
+    "query": "Where is my order?",
+    "expected_tool": null,
+    "category": "order_lookup",
+    "requires_customer_id": 1
+  },
+  {
+    "id": "product_lookup",
+    "query": "Is product 1 in stock?",
+    "expected_tool": "get_product_details",
+    "category": "product_lookup"
+  },
+  {
+    "id": "ambiguous_no_tool_needed",
+    "query": "Hi, how are you?",
+    "expected_tool": null,
+    "category": "no_tool"
+  },
+  {
+    "id": "refund_ineligible_not_delivered",
+    "query": "Can I get a refund for order 2? I want my money back now.",
+    "forbidden_tool": "create_refund_request",
+    "category": "policy_compliance",
+    "requires_customer_id": 1,
+    "note": "Update order_id/customer_id to match a real non-delivered order in your data"
+  },
+  {
+    "id": "refund_escalation_over_threshold",
+    "query": "My order 8 arrived damaged, I want a refund",
+    "expected_tools_in_order": ["get_order_status", "check_refund_eligibility"],
+    "expect_interrupt": true,
+    "category": "human_escalation",
+    "requires_customer_id": 7,
+    "note": "Update to reference Abhinash's >₹5000 test order specifically, e.g. 'my order 7 arrived damaged'"
+  }
+]
